@@ -24,10 +24,7 @@ async def main() -> None:
     hue_light = HueLightDevice()
     speaker = SmartSpeakerDevice()
     toilet = SmartToiletDevice()
-    
-    # hue_light_id = await service.register_device(hue_light)
-    # speaker_id = await service.register_device(speaker)
-    # toilet_id = await service.register_device(speaker)
+
     
     results = await asyncio.gather(
         service.register_device(hue_light),
@@ -50,8 +47,13 @@ async def main() -> None:
         Message(results[2], MessageType.CLEAN),
     ]
     
-    await run_sequence(service.run_program(wake_up_program))
-    await run_parallel(service.run_program(sleep_program))
+    await run_sequence(service.run_program(wake_up_program[0]), 
+                       service.run_program(wake_up_program[1]),
+                       service.run_program(wake_up_program[2]))
+    await run_parallel(service.run_program(sleep_program[0]),
+                       service.run_program(sleep_program[1]),
+                       service.run_program(sleep_program[2]),
+                       service.run_program(sleep_program[3]))
 
 if __name__ == "__main__":
     start = time.perf_counter()
